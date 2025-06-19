@@ -65,7 +65,7 @@ Quá trình này cho thấy tầm quan trọng của việc lựa chọn **mô h
 ### Các bước
 
 1.  **Tải Dự án:**
-    Toàn bộ dự án, bao gồm mã nguồn, dữ liệu và model đã huấn luyện, được lưu trữ trên Google Drive để tiện cho việc tải về.
+    Toàn bộ dự án, bao gồm mã nguồn, dữ liệu và model đã huấn luyện, được lưu trữ tập trung tại một thư mục trên Google Drive để tiện cho việc tải về.
     *   ➡️ **[Tải toàn bộ dự án tại đây (Link Google Drive)](https://drive.google.com/drive/folders/1nv2xMZnNctl5MaZs-XHenAfEHmQughIx?usp=sharing)**
     *   **Hướng dẫn:** Tại trang Drive, nhấn vào tên thư mục `ViCaptionTalk` và chọn **"Tải xuống"**. Sau đó, giải nén file `.zip` vừa tải về.
 
@@ -81,5 +81,25 @@ Quá trình này cho thấy tầm quan trọng của việc lựa chọn **mô h
     ```
 
 3.  **Chạy Web Demo:**
-    Đây là cách tốt nhất để trải nghiệm mô hình. Lệnh này sẽ khởi động một web server và tự động mở trình duyệt.
+    Đây là cách tốt nhất để trải nghiệm mô hình. Lệnh này sẽ khởi động một web server và tự động mở trình duyệt của bạn.
     ```bash
+    python app.py
+    ```
+    Sau đó, chỉ cần kéo thả ảnh vào giao diện web vừa hiện ra và xem kết quả.
+
+4.  **Test trên một ảnh đơn lẻ (Tùy chọn):**
+    Sử dụng script `predict.py` để nhanh chóng tạo chú thích cho một ảnh từ dòng lệnh:
+    ```bash
+    python predict.py --image_path duong_dan/den/anh_cua_ban.jpg
+    ```
+
+---
+
+## 📬 Thông tin Liên hệ
+
+Dự án này được thực hiện bởi Thanh Vân. Mọi ý kiến đóng góp, câu hỏi hoặc cơ hội hợp tác xin vui lòng liên hệ qua:
+
+*   **Email:** [thanh.van19062004@gmail.com](mailto:thanh.van19062004@gmail.com)
+*   **Facebook:** [Vân Cute](https://www.facebook.com/gmail.com.vancutenemoinguoi196)
+
+Xin chân thành cảm ơn sự quan tâm của bạn đến dự án!
