@@ -1,0 +1,40 @@
+# config/config_main.yaml (Phiên bản TỐI ƯU HÓA)
+
+data:
+  train_annotation: data/train/train_data.json
+  val_annotation: data/val/val_data.json 
+  test_annotation: data/test/test_data.json
+  image_dir: data/train/train-images/
+  max_seq_length: 40 # Tăng nhẹ để có không gian cho các câu dài hơn
+  image_size: 224
+  image_mean: [0.5, 0.5, 0.5]
+  image_std: [0.5, 0.5, 0.5]
+
+model:
+  # NÂNG CẤP: Sử dụng Swin Transformer mạnh hơn
+  vit_name: swin_base_patch4_window7_224_in22k
+  # THAY ĐỔI LỚN NHẤT: Dùng PhoBERT chuyên cho tiếng Việt
+  bert_model: vinai/phobert-base
+  # CẬP NHẬT: PhoBERT-base có hidden_dim là 768
+  hidden_dim: 768
+  num_decoder_layers: 6
+  dropout: 0.15 # Giữ dropout ở mức vừa phải
+
+train:
+  num_train_epochs: 15
+  batch_size: 24 # GIẢM: Để tránh lỗi hết bộ nhớ (Out of Memory) khi dùng model lớn hơn
+  # TỐI ƯU: Learning rate phù hợp cho fine-tuning
+  learning_rate: 3e-5
+  weight_decay: 1e-2 # AdamW hoạt động tốt với weight_decay cao hơn
+  patience: 3
+  metric_for_best_model: BLEU
+  output_dir: checkpoints_phobert/ # LƯU Ý: Lưu vào thư mục mới để so sánh
+  num_workers: 4
+  label_smoothing: 0.1
+  # Thêm tham số cho scheduler mới
+  warmup_steps: 0.1 # 10% tổng số step sẽ dùng để warmup
+
+eval:
+  batch_size: 1 # Giữ batch_size eval cao hơn để nhanh hơn
+  # Tăng beam size để cải thiện điểm số đánh giá
+  beam_size: 3

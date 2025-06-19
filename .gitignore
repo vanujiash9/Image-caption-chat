@@ -1,0 +1,15 @@
+# Bỏ qua các thư mục dữ liệu và model
+/data/
+/checkpoints_phobert/
+/checkpoints_phobert_finetune/
+/checkpoints/
+
+# Bỏ qua cache và các file không cần thiết khác
+__pycache__/
+*.pyc
+.vscode/
+venv/
+.venv/
+.DS_Store
+*.zip
+*.log

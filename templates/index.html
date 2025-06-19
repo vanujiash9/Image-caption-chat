@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViCaptionTalk AI Demo</title>
+    <style>
+        :root { --primary: #667eea; --dark-blue: #1a2a4d; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f4f7fc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .app-container { background-color: white; border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1); width: 100%; max-width: 500px; padding: 40px; text-align: center; }
+        h1 { color: var(--dark-blue); font-size: 1.8rem; margin-bottom: 10px; }
+        p { color: #5c677d; margin-bottom: 30px; }
+        .upload-area { border: 3px dashed #d1d8e6; border-radius: 15px; padding: 40px; cursor: pointer; transition: all 0.3s ease; }
+        .upload-area.hover { border-color: var(--primary); background-color: #f9faff; }
+        .upload-area p { margin: 0; font-weight: 500; }
+        .upload-area span { color: var(--primary); font-weight: 600; }
+        #file-input { display: none; }
+        .preview-area { margin-top: 30px; display: none; }
+        #image-preview { max-width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .result-area { margin-top: 20px; display: none; text-align: left; }
+        .result-area h3 { text-align: center; margin-bottom: 15px; font-size: 1.3rem; }
+        #result-caption { background-color: #f0f2f5; color: var(--dark-blue); padding: 20px; border-radius: 10px; font-size: 1.2rem; line-height: 1.5; font-weight: 500; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>AI Chú thích Ảnh Tiếng Việt</h1>
+        <p>Kéo thả một hình ảnh hoặc nhấn vào đây để tải lên.</p>
+        <div id="upload-area" class="upload-area">
+            <p>Kéo và thả ảnh tại đây</p>
+            <p>hoặc <span>chọn một file</span></p>
+        </div>
+        <input type="file" id="file-input" accept="image/*">
+        <div class="preview-area" id="preview-area">
+            <img id="image-preview" src="#" alt="Image Preview">
+        </div>
+        <div class="loader" id="loader"></div>
+        <div class="result-area" id="result-area">
+            <h3>Chú thích từ AI:</h3>
+            <p id="result-caption"></p>
+        </div>
+    </div>
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const previewArea = document.getElementById('preview-area');
+        const imagePreview = document.getElementById('image-preview');
+        const loader = document.getElementById('loader');
+        const resultArea = document.getElementById('result-area');
+        const resultCaption = document.getElementById('result-caption');
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => e.target.files.length && handleFile(e.target.files[0]));
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => uploadArea.addEventListener(e, t => {t.preventDefault(); t.stopPropagation();}, !1));
+        ['dragenter', 'dragover'].forEach(e => uploadArea.addEventListener(e, () => uploadArea.classList.add('hover'), !1));
+        ['dragleave', 'drop'].forEach(e => uploadArea.addEventListener(e, () => uploadArea.classList.remove('hover'), !1));
+        uploadArea.addEventListener('drop', (e) => e.dataTransfer.files.length && handleFile(e.dataTransfer.files[0]));
+        async function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = e => imagePreview.src = e.target.result;
+            reader.readAsDataURL(file);
+            previewArea.style.display = 'block';
+            resultArea.style.display = 'none';
+            loader.style.display = 'block';
+            const formData = new FormData();
+            formData.append('file', file);
+            try {
+                const response = await fetch('/predict', { method: 'POST', body: formData });
+                if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
+                const data = await response.json();
+                resultCaption.textContent = data.caption || data.error || 'Đã có lỗi xảy ra.';
+                resultArea.style.display = 'block';
+            } catch (error) {
+                console.error('Fetch error:', error);
+                resultCaption.textContent = 'Không thể kết nối đến máy chủ AI.';
+                resultArea.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

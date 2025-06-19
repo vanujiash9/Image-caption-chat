@@ -1,0 +1,38 @@
+# config/config_main.yaml (Phiên bản cuối cùng để INFERENCE)
+
+data:
+  train_annotation: data/train/train_data.json
+  val_annotation: data/val/val_data.json
+  # QUAN TRỌNG: Trỏ đến dữ liệu test
+  test_annotation: data/test/test_data.json 
+  image_dir: data/train-images/ # Sẽ được tự động đổi thành test-images khi chạy infer
+  max_seq_length: 40
+  image_size: 224
+  image_mean: [0.5, 0.5, 0.5]
+  image_std: [0.5, 0.5, 0.5]
+
+model:
+  vit_name: swin_base_patch4_window7_224.ms_in22k # Giữ nguyên cấu hình model
+  bert_model: vinai/phobert-base
+  hidden_dim: 768
+  num_decoder_layers: 6
+  dropout: 0.15
+
+# Phần train không còn quan trọng khi chạy infer, nhưng giữ lại để file hoàn chỉnh
+train:
+  num_train_epochs: 15
+  batch_size: 24
+  learning_rate: 3e-5
+  weight_decay: 1e-2
+  patience: 3
+  metric_for_best_model: BLEU
+  # QUAN TRỌNG: Trỏ về đúng thư mục chứa model tốt nhất
+  output_dir: checkpoints_phobert/ 
+  num_workers: 4
+  label_smoothing: 0.1
+  warmup_steps: 0.1
+
+eval:
+  # QUAN TRỌNG: Các tham số này sẽ được dùng khi chạy INFER
+  batch_size: 1      # Bắt buộc để Beam Search hoạt động
+  beam_size: 3       # Dùng Beam Search để có kết quả tốt nhất
